@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, ScrollView, SafeAreaView } from 'react-native';
+import { Image, Button, StyleSheet, Platform, ScrollView, SafeAreaView } from 'react-native';
 
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
