@@ -1,19 +1,7 @@
-import { View, type ViewProps, TouchableOpacity, Text } from 'react-native';
+import { View, Text, type ViewProps } from 'react-native';
+import React from 'react';
 
-import { ThemedText } from '@/components/ThemedText';
-
-import { useThemeColor } from '@/hooks/useThemeColor';
-import React, { Children } from 'react';
-import { Avatar, Card, CardActions, CardContent, CardHeader, CardMedia, Collapse, IconButton, Typography } from '@mui/material';
-import { ThumbUp, ThumbDown, ThumbsUpDown, Comment } from '@mui/icons-material';
-import SendIcon from '@mui/icons-material/Send';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import FoodBank from '@mui/icons-material/FoodBank';
-import { red } from '@mui/material/colors';
-import { IconButtonProps } from '@mui/material/IconButton';
-import { styled } from '@mui/material/styles';
-import { FoodPost } from '@/components/FoodPost';
+import FoodPost from './FoodPost';
 
 // Combines View properties AND the date
 export type Props = ViewProps & {
@@ -21,7 +9,7 @@ export type Props = ViewProps & {
   children?: React.ReactNode;
 };
 
-export function DayEntry({ date, children, style, ...otherProps }: Props) {
+export default function DayEntry({ date, children, style, ...otherProps }: Props) {
   // API response
   let posts = [];
   for (let i = 0; i < 10; i++) {
@@ -35,14 +23,14 @@ export function DayEntry({ date, children, style, ...otherProps }: Props) {
   // const backgroundColor = useThemeColor();
   return <View style={[{ padding: 20 }, style]} {...otherProps}>
     {children}
-    <ThemedText type="title">{
+    <Text>{
       date.toLocaleDateString()
-    }</ThemedText>
+    }</Text>
     {/* For each post make a Food Entry */}
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
       {posts.map((x, i) => {
         // style={{ width: '30%', margin: 10 }}
-        return <FoodPost data={x}  key={i} />
+        return <FoodPost data={x} key={i} />
       })}
     </View>
   </View>

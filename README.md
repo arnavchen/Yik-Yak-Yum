@@ -1,6 +1,8 @@
 # Yik Yak Yum
 React native app that allows people to find free food nearby
 
+note to self: icons.expo.fyi for icon browsing
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
