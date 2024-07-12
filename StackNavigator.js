@@ -6,22 +6,26 @@ import { NavigationContainer } from '@react-navigation/native';
 import FoodScreen from './screens/FoodScreen';
 import MapScreen from './screens/MapScreen';
 
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import Feather from '@expo/vector-icons/Feather';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const Tab = createBottomTabNavigator();
 
 function getTabs() {
     return (
-        <Tab.Navigator>
+        <Tab.Navigator screenOptions={{
+            tabBarStyle: {
+                shadowOpacity: 0.3,
+                shadowRadius: 10,
+            }
+        }}>
             <Tab.Screen name="FoodScreen" component={FoodScreen} options={{
-                title: 'Food', tabBarIcon: ({ color }) => (
-                    <FontAwesome5 name="hamburger" size={24} color="black" />
+                title: 'Food', headerShown: false, tabBarIcon: ({ focused }) => (
+                    <Ionicons name={focused ? 'fast-food' : 'fast-food-outline'} size={24} color="black" />
                 )
             }} />
             <Tab.Screen name="MapScreen" component={MapScreen} options={{
-                title: 'Map', tabBarIcon: ({ color }) => (
-                    <Feather name="map" size={24} color="black" />
+                title: 'Map', headerShown: false, tabBarIcon: ({ focused }) => (
+                    <Ionicons name={focused ? 'map' : 'map-outline'} size={24} color="black" />
                 )
             }} />
         </Tab.Navigator>
@@ -34,7 +38,7 @@ function Navigation() {
     return (
         <NavigationContainer>
             <Stack.Navigator>
-                <Stack.Screen name="Main" component={getTabs} options={{headerShown: false}} />
+                <Stack.Screen name="Main" component={getTabs} options={{ headerShown: false }} />
             </Stack.Navigator>
         </NavigationContainer>
     )

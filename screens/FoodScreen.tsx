@@ -1,4 +1,5 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text } from 'react-native';
+import { LinearGradient } from "expo-linear-gradient";
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import React from 'react';
 import DayEntry from '../components/DayEntry';
@@ -8,29 +9,43 @@ const date = new Date();
 
 export default function FoodScreen() {
   return (
-    <ScrollView>
-      {/* Show the first DayEntry */}
-      <DayEntry date={date} style={{ backgroundColor: 'orange' }}>
-        <Text style={{ alignItems: 'center', paddingBottom: 20, textDecorationLine: 'underline' }}>What's free rn?</Text>
-      </DayEntry>
-      {/* Show the last 5 days (maybe want more) */}
-      {/* (by showing what used to be free and what you missed, we are psychologically manipulating people that use our app to know what they could've had for free and therefore they check it more (... and it could be important for free food info today) */}
-      {[...Array(5)].map((x, i) => {
-        i += 1;
-        var prevDate = new Date();
-        prevDate.setDate(date.getDate() - i);
-        return <DayEntry key={i} date={prevDate} />
-      })}
+    <ScrollView style={{ backgroundColor: 'orange' }} contentInsetAdjustmentBehavior="automatic">
+      <SafeAreaView>
+        {/* Show the first DayEntry */}
+        <LinearGradient colors={['orange', "#ffffff"]} style={{ flex: 1 }}>
+          {/* Preface with how many items are free right now */}
+
+          {/* Todays DayEntry */}
+          <DayEntry date={date}>
+            <Text style={styles.titleContainer}>
+              What's free tonight?
+            </Text>
+          </DayEntry>
+        </LinearGradient>
+        {/* Show the last 5 days (maybe want more) */}
+        {/* (by showing what used to be free and what you missed, we are psychologically manipulating people that use our app to know what they could've had for free and therefore they check it more (... and it could be important for free food info today) */}
+        {[...Array(5)].map((x, i) => {
+          i += 1;
+          var prevDate = new Date();
+          prevDate.setDate(date.getDate() - i);
+          return <DayEntry key={i} date={prevDate}>
+            <Text style={styles.titleContainer}>{
+              prevDate.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })
+            }</Text>
+          </DayEntry>
+        })}
+      </SafeAreaView>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    padding: 10
+    marginTop: 10,
+    marginBottom: 30,
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "white",
   },
   stepContainer: {
     gap: 8,

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { View } from 'react-native';
 import { Button, Card, Icon, MD3Colors, Text } from 'react-native-paper';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 // import { Avatar, Button, Card, CardActionArea, CardActions, CardContent, CardHeader, CardMedia, Collapse, IconButton, Typography } from '@mui/material';
 
@@ -14,22 +15,24 @@ export type Props = {
     style?: React.CSSProperties;
 };
 
-export default function FoodPost({ data, style, ...rest }: Props) {
+const timeNow = Date.now();
+
+export default function FoodPost({ data, ...rest }: Props) {
     const [expanded, setExpanded] = React.useState(false);
+    const recent = new Date() - data.date < 86400000;
+    var showIcon = recent && data.workRequired;
+    // showIcon = false;
     return (
-        //  style={style}
         <View>
-            <Card elevation={5}>
-                <View style={{ paddingLeft: 16, flexDirection: 'row', alignItems: 'center' }}>
-                    <Icon
-                        source="alert-circle-outline"
-                        color={'orange'}
-                        size={50}
-                    />
-                    <Card.Title style={{ flexDirection: 'column' }} title={data.title} subtitle={data.date} />
+            <Card elevation={5} onPress={() => console.log('hi')}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    {/* Show the warning icon if it's recent and there's work required */}
+                    {showIcon && <Ionicons name="alert-circle-outline" size={50} color="black" style={{ paddingLeft: 10 }} />}
+                    <Card.Title titleVariant="titleLarge" titleNumberOfLines={2} style={{ flex: 1 }} title={data.title + " at your moms house you fat fuck"} subtitle={getTimeAgo(data.date)} />
                 </View>
                 <Card.Content>
-                    <Text variant="bodyMedium">{data.caption}</Text>
+                    <Text variant="titleLarge">{data.caption}</Text>
+                    <Text variant="bodyMedium">Some work required</Text>
                 </Card.Content>
                 {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
                 <Card.Actions>
@@ -80,3 +83,31 @@ export default function FoodPost({ data, style, ...rest }: Props) {
         </View>
     );
 }
+
+const getTimeAgo = (date) => {
+    const now = new Date();
+    const elapsed = now - new Date(date);
+
+    const minutes = Math.floor(elapsed / 60000);
+    const hours = Math.floor(elapsed / 3600000);
+    const days = Math.floor(elapsed / 86400000);
+    const weeks = Math.floor(elapsed / 604800000);
+    const months = Math.floor(elapsed / 2629800000);
+    const years = Math.floor(elapsed / 31557600000);
+
+    if (minutes < 1) {
+        return 'just now';
+    } else if (minutes < 60) {
+        return `${minutes} minute${minutes === 1 ? '' : 's'} ago`;
+    } else if (hours < 24) {
+        return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+    } else if (days < 7) {
+        return `${days} day${days === 1 ? '' : 's'} ago`;
+    } else if (weeks < 4) {
+        return `${weeks} week${weeks === 1 ? '' : 's'} ago`;
+    } else if (months < 12) {
+        return `${months} month${months === 1 ? '' : 's'} ago`;
+    } else {
+        return `${years} year${years === 1 ? '' : 's'} ago`;
+    }
+};

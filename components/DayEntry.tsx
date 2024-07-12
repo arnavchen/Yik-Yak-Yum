@@ -15,7 +15,7 @@ export default function DayEntry({ date, children, style, ...otherProps }: Props
   for (let i = 0; i < 10; i++) {
     posts[i] = {
       title: 'Free Buckeye Donuts',
-      date: 'epoch millis go here',
+      date: date.getTime(),
       caption: 'go to buckeye donuts and get a free donut with a student id',
       workRequired: true,
     }
@@ -23,9 +23,6 @@ export default function DayEntry({ date, children, style, ...otherProps }: Props
   // const backgroundColor = useThemeColor();
   return <View style={[{ padding: 20 }, style]} {...otherProps}>
     {children}
-    <Text>{
-      date.toLocaleDateString()
-    }</Text>
     {/* For each post make a Food Entry */}
     <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' }}>
       {posts.map((x, i) => {
