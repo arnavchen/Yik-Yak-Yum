@@ -35,6 +35,7 @@ export default function FoodPost({ data, ...rest }: Props) {
                     {data.transportation && <Chip onPress={() => addMessage("Hi")} icon="car">Off-Campus</Chip>}
                     {data.phoneNeeded && <Chip icon="cellphone">Need Phone</Chip>}
                     {data.doorAccess && <Chip icon="door-sliding-lock">Entry Needed</Chip>}
+                    {data.idNeeded && <Chip icon="credit-card">Student ID Needed</Chip>}
                 </Card.Content>
                 {/* Body */}
                 <Card.Content style={{ paddingTop: 8 }}>
