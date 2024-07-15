@@ -1,7 +1,7 @@
 import { Text } from 'react-native-paper';
 import { StyleSheet, Image, Platform } from 'react-native';
 
-export default function TabTwoScreen() {
+export default function MapScreen() {
   return (
     <Text>hi</Text>
   );

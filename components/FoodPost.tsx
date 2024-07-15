@@ -1,92 +1,66 @@
-import * as React from 'react';
-import { View } from 'react-native';
-import { Button, Card, Icon, MD3Colors, Text } from 'react-native-paper';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import React, { useEffect, useRef, useState } from "react";
+import { Alert, Animated, Easing, StyleSheet, View } from 'react-native';
+import { Snackbar, Card, Text, Tooltip, Chip } from 'react-native-paper';
+
+import FoodData from './FoodData';
+import App from "../App";
 
 // import { Avatar, Button, Card, CardActionArea, CardActions, CardContent, CardHeader, CardMedia, Collapse, IconButton, Typography } from '@mui/material';
 
-export type Props = {
-    data: {
-        title: string,
-        date: string,
-        caption: string,
-        workRequired: boolean,
-    };
-    style?: React.CSSProperties;
-};
-
 const timeNow = Date.now();
 
+export type Props = {
+    data: FoodData;
+};
+
 export default function FoodPost({ data, ...rest }: Props) {
+    // Not snackbar
     const [expanded, setExpanded] = React.useState(false);
-    const recent = new Date() - data.date < 86400000;
-    var showIcon = recent && data.workRequired;
-    // showIcon = false;
+    const handlePress = () => setExpanded(!expanded);
+    // Snackbar
+    const [elements, setElements] = useState([]);
+    const addMessage = (message) => {
+        setElements([
+            ...elements,
+            { id: elements.length + 1, text: `Element ${elements.length + 1}` }
+        ])
+    };
     return (
-        <View>
-            <Card elevation={5} onPress={() => console.log('hi')}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    {/* Show the warning icon if it's recent and there's work required */}
-                    {showIcon && <Ionicons name="alert-circle-outline" size={50} color="black" style={{ paddingLeft: 10 }} />}
-                    <Card.Title titleVariant="titleLarge" titleNumberOfLines={2} style={{ flex: 1 }} title={data.title + " at your moms house you fat fuck"} subtitle={getTimeAgo(data.date)} />
-                </View>
-                <Card.Content>
-                    <Text variant="titleLarge">{data.caption}</Text>
-                    <Text variant="bodyMedium">Some work required</Text>
+        <View style={{ margin: 8 }}>
+            <Card mode="outlined" onPress={handlePress}>
+                <Card.Title titleStyle={{ fontWeight: 'bold', paddingTop: 8 }} titleVariant="titleLarge" titleNumberOfLines={2} style={{ flex: 3 }} title={data.location} subtitle={getTimeAgo(data.date)} rightStyle={{ paddingRight: 20 }}
+                    right={(props) => <Text>&lt; 3 miles</Text>} />
+                {/* Show chips */}
+                <Card.Content style={{ paddingTop: 8, flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+                    {data.transportation && <Chip onPress={() => addMessage("Hi")} icon="car">Off-Campus</Chip>}
+                    {data.phoneNeeded && <Chip icon="cellphone">Need Phone</Chip>}
+                    {data.doorAccess && <Chip icon="door-sliding-lock">Entry Needed</Chip>}
                 </Card.Content>
-                {/* <Card.Cover source={{ uri: 'https://picsum.photos/700' }} /> */}
-                <Card.Actions>
-                    <Button onPress={() => console.log('Pressed')}>Cancel</Button>
-                    <Button>Ok</Button>
-                </Card.Actions>
+                {/* Body */}
+                <Card.Content style={{ paddingTop: 8 }}>
+                    <Text variant="bodyLarge">{data.details}</Text>
+                </Card.Content>
             </Card>
-            {/* <Card style={{}}>
-                <CardHeader
-                    avatar={data.workRequired &&
-                        <Avatar sx={{ bgcolor: red[500] }}>
-                            <AssignmentIcon />
-                        </Avatar>
-                    }
-                    title={"Free Buckeye Donuts"}
-                    subheader="20 minutes ago"
-                />
-                <CardContent>
-                    <Typography variant="body1" color="text.secondary">
-                        They are giving out one donut per student with a buckid
-                    </Typography>
-                    <Typography style={{ marginTop: 10 }} variant="body2" color="text.secondary">
-                        *Requires Work
-                    </Typography>
-                </CardContent>
-                <CardActions>
-                    <IconButton>
-                        <ThumbsUpDown />
-                    </IconButton>
-                    <Text>
-                        2 confirmed, 1 denied
-                    </Text>
-                    <div style={{ marginLeft: 'auto' }}>
-                        <IconButton aria-label="share">
-                            <SendIcon />
-                        </IconButton>
-                    </div>
-                </CardActions>
-                <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    <CardContent>
-                        <Typography paragraph>20 mins ago:</Typography>
-                        <Typography paragraph>
-                            yeah this shit fake asf
-                        </Typography>
-                    </CardContent>
-                </Collapse>
-            </Card> */}
+            <View style={{ top: 0, alignItems: 'center', position: 'absolute', flex: 1 }}>
+                {elements.map((element) => (
+                    <Snackbar style={{ top: 50 }} key={element.id} visible={true} onDismiss={() => { }}
+                        action={{
+                            label: 'Undo',
+                            onPress: () => {
+                                // Do something
+                            },
+                        }}>
+                        {element.text}
+                    </Snackbar>
+                ))}
+            </View>
         </View>
     );
 }
 
 const getTimeAgo = (date) => {
     const now = new Date();
-    const elapsed = now - new Date(date);
+    const elapsed = now.getTime() - new Date(date).getTime();
 
     const minutes = Math.floor(elapsed / 60000);
     const hours = Math.floor(elapsed / 3600000);

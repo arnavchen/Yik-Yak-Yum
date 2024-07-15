@@ -1,10 +1,17 @@
-import { StyleSheet } from 'react-native';
+import React from "react";
+import { Appearance, StyleSheet } from 'react-native';
+import { Snackbar, PaperProvider } from 'react-native-paper';
 import Navigation from './StackNavigator';
-import { Text } from 'react-native-paper';
+import * as Theme from './themes';
 
 export default function App() {
   return (
-    <Navigation />
+    <>
+      <PaperProvider theme={Appearance.getColorScheme() == 'light' ? Theme.lightTheme : Theme.darkTheme}>
+        {/* <PaperProvider theme={Appearance.getColorScheme() == 'light' ? DefaultLight : DefaultDark}> */}
+        <Navigation />
+      </PaperProvider>
+    </>
     // <Text>hi</Text>
   );
 }

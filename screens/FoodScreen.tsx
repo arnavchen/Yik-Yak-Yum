@@ -1,51 +1,77 @@
-import { LinearGradient } from "expo-linear-gradient";
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useRef } from "react";
 
-import React from 'react';
-import DayEntry from '../components/DayEntry';
+import { SafeAreaView, SectionList, StyleSheet } from "react-native";
+import { Button, Card, Divider, IconButton, useTheme } from 'react-native-paper';
+
+import FoodData from "../components/FoodData";
+import FoodPost from "../components/FoodPost";
 
 // Get the date
 const date = new Date();
+const foodData = [];
+
+// Pretend we called the API, got the last 5 days
+[...Array(5)].map((x, i) => {
+  // API response
+  let posts = [];
+  // Temp offset the date
+  var prevDate = new Date();
+  prevDate.setDate(date.getDate() - i);
+  for (let i = 0; i < 10; i++) {
+    posts[i] = new FoodData('Buckeye Donuts', 'go to buckeye donuts and get a free donut with a student id because when you go and you get a student id they will give you af re donut because it sa special thig today and joh cena will be there and he gies every student with an a on their report card a high 5 and', 'lat and long lol', prevDate.getTime(), true, true, true);
+  }
+  // Fill in array
+  foodData[i] = {
+    title: prevDate.toLocaleDateString(undefined, { month: 'long', day: 'numeric' }),
+    data: posts,
+    index: i
+  };
+});
+
+// Set first title of data
+foodData[0].title = "Today";
 
 export default function FoodScreen() {
-  return (
-    <ScrollView style={{ backgroundColor: 'orange' }} contentInsetAdjustmentBehavior="automatic">
-      <SafeAreaView>
-        {/* Show the first DayEntry */}
-        <LinearGradient colors={['orange', "#ffffff"]} style={{ flex: 1 }}>
-          {/* Preface with how many items are free right now */}
+  const scrollRef = useRef(null);
+  // Swipe to refresh
+  const [refreshing, setRefreshing] = React.useState(false);
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  }, []);
 
-          {/* Todays DayEntry */}
-          <DayEntry date={date}>
-            <Text style={styles.titleContainer}>
-              What's free tonight?
-            </Text>
-          </DayEntry>
-        </LinearGradient>
-        {/* Show the last 5 days (maybe want more) */}
-        {/* (by showing what used to be free and what you missed, we are psychologically manipulating people that use our app to know what they could've had for free and therefore they check it more (... and it could be important for free food info today) */}
-        {[...Array(5)].map((x, i) => {
-          i += 1;
-          var prevDate = new Date();
-          prevDate.setDate(date.getDate() - i);
-          return <DayEntry key={i} date={prevDate}>
-            <Text style={styles.titleContainer}>{
-              prevDate.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })
-            }</Text>
-          </DayEntry>
-        })}
-      </SafeAreaView>
-    </ScrollView>
+  const theme = useTheme();
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.onPrimary }}>
+      <SectionList
+        ref={scrollRef}
+        showsVerticalScrollIndicator={false}
+        style={{ marginBottom: 0 }}
+        stickySectionHeadersEnabled={true}
+        sections={foodData}
+        renderItem={({ item, index }) => {
+          return (
+            <FoodPost data={item} />
+          )
+        }} renderSectionHeader={({ section: { title, index } }) => (
+          <>
+            <Card.Title titleVariant={'headlineMedium'} style={[styles.titleContainer, { backgroundColor: theme.colors.onPrimary }]} title={title} subtitle={foodData[index].data.length > 0 ? foodData[index].data.length + " items" : "No items"} right={(props) => index > 0 && <Button compact onPress={() => scrollRef.current.scrollToLocation({ itemIndex: 0 })}>Back to Today</Button>} />
+            <Divider bold />
+          </>
+        )} onRefresh={onRefresh} refreshing={refreshing}>
+      </SectionList>
+    </SafeAreaView >
   );
 }
 
 const styles = StyleSheet.create({
   titleContainer: {
-    marginTop: 10,
-    marginBottom: 30,
+    padding: 10,
+    paddingBottom: 20,
     fontSize: 28,
-    fontWeight: "bold",
-    color: "white",
+    // fontWeight: "bold",
   },
   stepContainer: {
     gap: 8,
